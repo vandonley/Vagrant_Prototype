@@ -1,0 +1,1 @@
+vagrant box add ferhaty/win7ie10winrm --provider virtualbox
