@@ -123,8 +123,8 @@ Vagrant.configure(2) do |config|
   Set-WindowsExplorerOptions -EnableShowHiddenFilesFoldersDrives -EnableShowProtectedOSFiles -EnableShowFileExtensions -EnableShowFullPathInTitleBar
   Enable-RemoteDesktop
   Set-StartScreenOptions -EnableBootToDesktop -EnableSearchEverywhereInAppsView -EnableListDesktopAppsFirst
-  Install-ChocolateyPinnedTaskBarItem "$env:programfiles\Notepad++\notepad++.exe"
-  Install-ChocolateyPinnedTaskBarItem "$env:windir\system32\WindowsPowerShell\v1.0\PowerShell_ISE.exe"
+  Install-ChocolateyPinnedTaskBarItem "$env:windir\\system32\\WindowsPowerShell\\v1.0\\PowerShell_ISE.exe"
+  Install-ChocolateyPinnedTaskBarItem "$env:programfiles\\Notepad++\\notepad++.exe"
  SHELL
   
 end
