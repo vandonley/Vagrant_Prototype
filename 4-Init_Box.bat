@@ -1,1 +1,1 @@
-vagrant init ferhaty/win7ie10winrm
+vagrant init
