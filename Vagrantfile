@@ -5,11 +5,12 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+
 Vagrant.configure(2) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
-
+  
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   # For ModernIE boxes, enter one of the following in config.vm.box:
@@ -18,16 +19,50 @@ Vagrant.configure(2) do |config|
   # Windows 8 with IE 10:  modernIE/w8-ie10
   # Windows 8.1 with IE 11:  modernIE/w8.1-ie11
   # Windows 10 with IE 11 + Edge: modernIE/w10-edge 
-  config.vm.box = "modernIE/w7-ie11"
+  # config.vm.box = "modernIE/w7-ie11"
+  
+  # All of the available VM boxes for testing.
+ config.vm.define "vista", autostart: false do |vista|
+  vista.vm.box = "modernIE/vista-ie7"
+  vista.vm.network "forwarded_port", host: 13389, guest: 3389, id: "rdp", auto_correct: true
+  vista.vm.network "forwarded_port", host: 15985, guest: 5985, id: "winrm", auto_correct: true
+ end
+ 
+ config.vm.define "win7", primary: true, autostart: true do |win7|
+  win7.vm.box = "modernIE/w7-ie11"
+  win7.vm.network "forwarded_port", host: 23389, guest: 3389, id: "rdp", auto_correct: true
+  win7.vm.network "forwarded_port", host: 25985, guest: 5985, id: "winrm", auto_correct: true
+ end
 
+ config.vm.define "win8", autostart: false do |win8|
+  win8.vm.box = "modernIE/w8-ie10"
+  win8.vm.network "forwarded_port", host: 33389, guest: 3389, id: "rdp", auto_correct: true
+  win8.vm.network "forwarded_port", host: 35985, guest: 5985, id: "winrm", auto_correct: true
+ end
+ 
+ config.vm.define "win81", autostart: false do |win81|
+  win81.vm.box = "modernIE/w8.1-ie11"
+  win81.vm.network "forwarded_port", host: 43389, guest: 3389, id: "rdp", auto_correct: true
+  win81.vm.network "forwarded_port", host: 45985, guest: 5985, id: "winrm", auto_correct: true
+ end
+
+ config.vm.define "win10", autostart: false do |win10|
+  win10.vm.box = "modernIE/w10-edge"
+  win10.vm.network "forwarded_port", host: 53389, guest: 3389, id: "rdp", auto_correct: true
+  win10.vm.network "forwarded_port", host: 55985, guest: 5985, id: "winrm", auto_correct: true
+ end
+
+  # Change guests to Windows
+ config.vm.guest = :windows
+ 
   # Change VM communication method to Windows.
   # Comment out if you are able to use SSH.
-  config.vm.communicator = "winrm"
+ config.vm.communicator = "winrm"
   
   # If using modernIE boxes, set the correct username and password.
   # Comment out if box has vagrant user.
-  config.winrm.username = "IEUser"
-  config.winrm.password = "Passw0rd!"
+ config.winrm.username = "IEUser"
+ config.winrm.password = "Passw0rd!"
   
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -57,17 +92,15 @@ Vagrant.configure(2) do |config|
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
-  #
-  config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
+
+ config.vm.provider "virtualbox" do |vb|
+  # Display the VirtualBox GUI when booting the machine
   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
+  # Customize the amount of memory on the VM:
   vb.memory = "2048"
   vb.cpus = 2
+ end
   
-  end
-  #
   # View the documentation for the provider you are using for more
   # information on available options.
 
@@ -81,7 +114,15 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", inline: <<-SHELL
-  choco install -y boxstarter
-  SHELL
+ config.vm.provision "shell", inline: "choco install -y chocolatey"
+ config.vm.provision "shell", inline: "choco install -y boxstarter 7zip.install PowerShell libreoffice notepadplusplus.install"
+ config.vm.provision "shell", inline: <<-SHELL
+  Import-Module Boxstarter.Chocolatey
+  Update-ExecutionPolicy Unrestricted
+  Set-WindowsExplorerOptions -EnableShowHiddenFilesFoldersDrives -EnableShowProtectedOSFiles -EnableShowFileExtensions
+  Enable-RemoteDesktop
+  Install-ChocolateyPinnedTaskBarItem "$env:programfiles\Notepad++\notepad++.exe"
+  Install-ChocolateyPinnedTaskBarItem "$env:windir\system32\WindowsPowerShell\v1.0\PowerShell_ISE.exe"
+ SHELL
+  
 end
