@@ -114,13 +114,15 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
+ config.vm.provision "shell", inline: "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
  config.vm.provision "shell", inline: "choco install -y chocolatey"
  config.vm.provision "shell", inline: "choco install -y boxstarter 7zip.install PowerShell libreoffice notepadplusplus.install"
  config.vm.provision "shell", inline: <<-SHELL
   Import-Module Boxstarter.Chocolatey
   Update-ExecutionPolicy Unrestricted
-  Set-WindowsExplorerOptions -EnableShowHiddenFilesFoldersDrives -EnableShowProtectedOSFiles -EnableShowFileExtensions
+  Set-WindowsExplorerOptions -EnableShowHiddenFilesFoldersDrives -EnableShowProtectedOSFiles -EnableShowFileExtensions -EnableShowFullPathInTitleBar
   Enable-RemoteDesktop
+  Set-StartScreenOptions -EnableBootToDesktop -EnableSearchEverywhereInAppsView -EnableListDesktopAppsFirst
   Install-ChocolateyPinnedTaskBarItem "$env:programfiles\Notepad++\notepad++.exe"
   Install-ChocolateyPinnedTaskBarItem "$env:windir\system32\WindowsPowerShell\v1.0\PowerShell_ISE.exe"
  SHELL
