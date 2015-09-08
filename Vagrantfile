@@ -116,7 +116,7 @@ Vagrant.configure(2) do |config|
   # documentation for more information about their specific syntax and use.
  config.vm.provision "shell", inline: "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
  config.vm.provision "shell", inline: "choco install -y chocolatey"
- config.vm.provision "shell", inline: "choco install -y boxstarter 7zip.install PowerShell libreoffice notepadplusplus.install"
+ config.vm.provision "shell", inline: "choco install -y 7zip.install PowerShell libreoffice notepadplusplus.install boxstarter"
  config.vm.provision "shell", inline: <<-SHELL
   Import-Module Boxstarter.Chocolatey
   Update-ExecutionPolicy Unrestricted
