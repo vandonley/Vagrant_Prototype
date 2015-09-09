@@ -55,6 +55,12 @@ Vagrant.configure(2) do |config|
   # Change guests to Windows
  config.vm.guest = :windows
  
+  # Increse the timeout for slow booting machines.
+ config.vm.boot_timeout = 600
+ 
+  # Increse the timeout for halt for slow machines.
+ config.vm.graceful_halt_timeout = 120
+  
   # Change VM communication method to Windows.
   # Comment out if you are able to use SSH.
  config.vm.communicator = "winrm"
@@ -87,7 +93,7 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
- config.vm.synced_folder "Vagrant_Share/", "/Vagrant_Share"
+ config.vm.synced_folder "../VM_Share/", "/VM_Share", create: true
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -96,9 +102,8 @@ Vagrant.configure(2) do |config|
  config.vm.provider "virtualbox" do |vb|
   # Display the VirtualBox GUI when booting the machine
   vb.gui = true
-  # Customize the amount of memory on the VM:
-  vb.memory = "2048"
-  vb.cpus = 2
+  # Customize the amount of memory on the VM, set CPU count, and increase the NAT cache to prevent disconnect:
+  vb.customize ["modifyvm", :id, "--cpus", "2", "--memory", "2048", "--natsettings1", "0,400,400,0,0" ]
  end
   
   # View the documentation for the provider you are using for more
@@ -125,6 +130,7 @@ Vagrant.configure(2) do |config|
   Set-StartScreenOptions -EnableBootToDesktop -EnableSearchEverywhereInAppsView -EnableListDesktopAppsFirst
   Install-ChocolateyPinnedTaskBarItem "$env:windir\\system32\\WindowsPowerShell\\v1.0\\PowerShell_ISE.exe"
   Install-ChocolateyPinnedTaskBarItem "$env:programfiles\\Notepad++\\notepad++.exe"
+  Install-ChocolateyPinnedTaskBarItem "$env:ProgramFiles(x86)\\Notepad++\\notepad++.exe"
  SHELL
   
 end
